@@ -137,8 +137,8 @@ instagram_clone/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/<your-username>/App_Development.git
-   cd App_Development
+   git clone https://github.com/<your-username>/fullstack_instagram_clone.git
+   cd fullstack_instagram_clone
    ```
 
 2. **Install backend dependencies**
