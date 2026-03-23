@@ -1178,8 +1178,20 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <!-- Google Maps API -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBsy13tTl268IL-chlMBDF8lFqAgQ3tcg&libraries=marker&callback=initMap" onerror="handleGoogleMapsError()"></script>
+  <!-- Google Maps API (key loaded from backend) -->
+  <script>
+    fetch('/api/config')
+      .then(res => res.json())
+      .then(config => {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${config.googleApiKey}&libraries=marker&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        script.onerror = handleGoogleMapsError;
+        document.head.appendChild(script);
+      })
+      .catch(() => handleGoogleMapsError());
+  </script>
   <script>
     // Handle Google Maps API loading errors
     function handleGoogleMapsError() {

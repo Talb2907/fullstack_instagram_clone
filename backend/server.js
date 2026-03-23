@@ -62,6 +62,11 @@ app.use('/api/following', followingRouter);
 app.use('/api/notifications', notificationRouter);
 app.use('/api/facebook', facebookRouter);
 
+// Expose public config to frontend
+app.get('/api/config', (req, res) => {
+  res.json({ googleApiKey: process.env.GOOGLE_API_KEY || '' });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({ 
