@@ -71,7 +71,7 @@ router.get('/geo', auth, async (req, res) => {
           const geocodeResponse = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
             params: {
               address: `${city} city center, Israel`, // Focus on city center
-              key: process.env.GOOGLE_MAPS_API_KEY || 'AIzaSyBBsy13tTl268IL-chlMBDF8lFqAgQ3tcg'
+              key: process.env.GOOGLE_API_KEY
             }
           });
 
