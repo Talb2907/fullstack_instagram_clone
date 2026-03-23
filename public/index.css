@@ -1,0 +1,176 @@
+/*General Page Styles */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/*Main Layout Container*/
+.login-wrapper {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 60px;
+  padding-top: 40px;
+  box-sizing: border-box;
+  min-height: 88vh;
+}
+
+/*Login Form Container*/
+.login-form-box {
+  background: #fff;
+  border: 0px solid #dbdbdb;
+  padding: 28px 36px;
+  width: 280px;
+  text-align: center;
+  font-size: 15px;
+  margin-top: 55px;
+}
+
+/*Image Section on the Side*/
+.login-image-box {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/*Phone Illustration Image*/
+.login-phone-img {
+  width: 560px;
+  max-width: 100%;
+  margin-top: 12px;
+}
+
+/*Instagram Logo*/
+.login-logo-img {
+  width: 180px;
+  margin-bottom: 20px;
+}
+
+/* Input Fields*/
+.login-form-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  background: #fafafa;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  font-size: 15px;
+}
+
+/*Submit Button*/
+.login-submit-btn {
+  width: 100%;
+  padding: 12px 0;
+  background-color: #4150f7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+
+/*OR Separator */
+.login-or-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8e8e8e;
+  font-weight: bold;
+  font-size: 13px;
+  margin: 15px 0;
+}
+
+.login-or-separator::before,
+.login-or-separator::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: #dbdbdb;
+  margin: 0 10px;
+}
+
+/*Facebook Login Link*/
+.login-facebook-link {
+  color: #4872cd;
+  font-weight: bold;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+}
+
+/*Facebook Icon*/
+.login-fb-icon {
+  width: 20px;
+  margin-left: 8px;
+}
+
+/*Forgot Password Link*/
+.login-forgot-link {
+  display: block;
+  margin-top: 12px;
+  color: #00376b;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/*Signup Box*/
+.login-signup-box {
+  margin-top: 35px;
+  font-size: 15px;
+}
+
+.login-signup-box a {
+  font-weight: bold;
+  text-decoration: none;
+  color: #0095f6;
+}
+
+/*Footer Section */
+.login-footer {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #737373;
+  text-align: center;
+  line-height: 1.8;
+  direction: rtl;
+  padding-bottom: 30px;
+}
+.input-error {
+  border: 1px solid red;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 12px;
+  cursor: pointer;
+  color: #737373;
+  font-size: 14px;
+  user-select: none;
+}
+
+.input-container input,
+.password-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  background: #fafafa;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  font-size: 15px;
+  box-sizing: border-box;
+}

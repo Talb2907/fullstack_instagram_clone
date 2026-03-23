@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" href="/login image/Instagram_logo.png" type="image/png">
+</head>
+<body>
+  <div class="login-wrapper"> 
+   <!-- Login form -->
+    <div class="login-form-box">
+      <img src="/login image/Instagram_logo.svg.png" alt="Instagram" class="login-logo-img">
+
+      <form onsubmit="return false;">
+        
+        <div class="input-container">
+          <input type="text" id="emailInput" placeholder="מספר טלפון, שם משתמש או אימייל">
+        </div>
+
+        <div class="password-container">
+          <input type="password" id="passwordInput" placeholder="סיסמה">
+          <span id="togglePassword" class="toggle-password">הצג</span>
+        </div>
+
+
+        <button type="submit" class="login-submit-btn">התחבר/י</button>
+        
+
+        <div class="login-or-separator">או</div>
+
+        <a href="https://www.facebook.com/?locale=he_IL" class="login-facebook-link">
+          <img src="/login image/facebook.png" class="login-fb-icon" alt="Facebook logo">
+          התחבר/י באמצעות פייסבוק
+        </a>
+             <p id="emailError" style="color: red; display: none;">כתובת מייל לא תקינה</p>
+        <p id="passwordError" style="color: red; display: none;">נא להזין סיסמה</p>
+
+        <a href="reg.html" class="login-forgot-link">שכחת את הסיסמה?</a>
+      </form>
+
+      <div class="login-signup-box">
+        אין לך חשבון? <a href="reg.html">הרשמה</a>
+      </div>
+    </div>
+
+
+   <div class="login-image-box">
+      <img src="/login image/phone-image.png" class="login-phone-img" alt="instagram phones">
+    </div>
+  </div>
+
+  <footer class="login-footer">
+    <p>
+      יצירת קשר עם העלאות ומי שאינו משתמש ·
+      Meta &nbsp;&nbsp; אודות &nbsp;&nbsp; בלוג &nbsp;&nbsp; עזרה &nbsp;&nbsp; API &nbsp;&nbsp; תנאים &nbsp;&nbsp; פרטיות &nbsp;&nbsp; קוקיז &nbsp;&nbsp; מיקומים &nbsp;&nbsp; אינסטגרם Lite &nbsp;&nbsp; Threads &nbsp;&nbsp; Meta Verified
+    </p>
+    <p>
+      © 2025 Instagram from Meta · <strong>עברית</strong>
+    </p>
+  </footer>
+
+  <script src="index.js"></script>
+</body>
+</html>
+

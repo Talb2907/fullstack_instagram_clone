@@ -1,0 +1,1199 @@
+<!-- feed.html -->
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Instagram Clone</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="feed.css" />
+  <!-- Define site icon -->
+  <link rel="icon" href="images/Instagram_icon.png" type="image/png" />
+</head>
+<body>
+  <div class="container-fluid bg-white">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <div class="col-lg-2 sidebar-panel d-flex flex-column justify-content-between vh-100">
+        <div>
+          <div class="d-flex align-items-center justify-content-center mb-0">
+            <img src="images/logo.png" alt="Instagram Logo" id="logo" class="logo-picture" />
+            <i class="bi bi-lightbulb-fill ms-2 fact-icon" onclick="openDailyFactModal()" title="עובדה יומית" data-bs-toggle="tooltip" data-bs-placement="bottom"></i>
+          </div>
+          <ul class="nav flex-column text-end">
+
+            <li class="nav-item"><a class="sidebar-link" href="#" onclick="openSearchModal()"><i class="bi bi-search ms-3"></i> חיפוש</a></li>
+            <li class="nav-item"><a class="sidebar-link" href="#" onclick="openCreateGroupModal()"><i class="bi bi-plus-circle ms-3"></i> יצירת קבוצה</a></li>
+            <li class="nav-item"><a class="sidebar-link" href="#" onclick="openMyGroupsModal()"><i class="bi bi-people ms-3"></i> הקבוצות שלי</a></li>
+            <li class="nav-item"><a class="sidebar-link" href="#" onclick="openDashboardModal()"><i class="bi bi-graph-up ms-3"></i> לוח בקרה</a></li>
+            <li class="nav-item"><a class="sidebar-link" href="#" onclick="openFollowersMapModal()"><i class="bi bi-geo-alt ms-3"></i> מפת העוקבים</a></li>
+            <li class="nav-item"><a class="sidebar-link" href="#" onclick="openFacebookPage()"><i class="bi bi-facebook ms-3"></i> פייסבוק</a></li>
+            <li class="nav-item">
+              <a class="sidebar-link position-relative" href="#" onclick="openNotificationsModal()">
+                <i class="bi bi-heart ms-3"></i> התראות
+                <span class="notification-badge d-none" id="notificationBadge">0</span>
+              </a>
+            </li>
+            <li class="nav-item"><a class="sidebar-link" href="#" onclick="openCreatePostModal()"><i class="bi bi-plus-square ms-3"></i> יצירה</a></li>
+            <li class="nav-item"><a class="sidebar-link profile-nav" href="#" onclick="openProfileModal()"><img id="sidebarProfilePic" src="images/profile.jpg" class="rounded-circle" alt="תמונת פרופיל" /> <span id="sidebarUsername">מתחבר...</span></a></li>
+            <li class="nav-item"><a class="sidebar-link text-end" href="#" onclick="toggleDarkMode()"><i class="bi bi-moon-fill ms-3"></i>מצב לילה</a></li>
+          </ul>
+        </div>
+        <div>
+        </div>
+      </div>
+
+      <!-- Feed Center -->
+      <div class="col-lg-6 p-4 mx-auto feed-wrapper">
+        <div class="feed-content">
+
+          <!-- Stories -->
+          <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap story-bar" id="storiesContainer">
+            <!-- Stories will be dynamically loaded here -->
+            <div class="text-center text-muted">טוען סיפורים...</div>
+          </div>
+
+          <!-- Search Bar + Filter -->
+          <div class="search-container mb-4" id="mainSearchBar">
+            <div class="d-flex align-items-center">
+              <!-- Filter Dropdown -->
+              <div class="dropdown me-2">
+                <button class="btn btn-outline-secondary filter-btn d-flex align-items-center" type="button" id="filterDropdown" data-bs-toggle="dropdown" title="סנן פוסטים">
+                  <i class="bi bi-funnel"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                  <li><a class="dropdown-item" href="#" onclick="filterPostsByType('text')">פוסטים עם טקסט בלבד</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="filterPostsByType('video')">סרטונים בלבד</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="filterPostsByType('image')">תמונות בלבד</a></li>
+                  <li><a class="dropdown-item" href="#" onclick="filterPostsByType('all')">הצג הכל</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item advanced-search-item" href="#" onclick="openAdvancedSearchModal()">
+                    <i class="bi bi-search-heart me-2"></i>חיפוש מתקדם
+                  </a></li>
+                </ul>
+              </div>
+              <!-- Search Bar -->
+              <div class="flex-grow-1">
+                <div class="input-group">
+                  <input type="text" class="form-control search-input" id="postSearchInput" placeholder="חיפוש בפוסטים..." onkeyup="filterPosts(this.value)">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Posts Container -->
+          <div id="postsContainer">
+            <!-- Posts will be dynamically loaded here -->
+            <div class="text-center text-muted">טוען פוסטים...</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Suggestions Sidebar -->
+      <div class="col-lg-3 d-none d-lg-block suggestions-fix">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="d-flex align-items-center gap-2">
+            <img id="suggestionsProfilePic" src="images/profile.jpg" class="sidebar-user-img" alt="תמונת פרופיל" />
+            <strong id="suggestionsUsername">מתחבר...</strong>
+          </div>
+          <a href="#" class="follow-btn" onclick="logout()">התנתק</a>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="suggestion-title">הצעות בשבילך</span>
+        </div>
+        <div id="suggestionsContainer">
+          <div class="text-center text-muted">
+            <div class="spinner-border spinner-border-sm me-2" role="status">
+              <span class="visually-hidden">טוען...</span>
+            </div>
+            טוען הצעות...
+          </div>
+        </div>
+        <div class="footer-links mt-5 text-muted small">
+          אודות · עזרה · API · פרטיות · תנאים · מיקומים · Meta Verified<br />
+          © 2025 Instagram from Meta · עברית
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Story Overlay -->
+  <div id="storyOverlay" class="story-overlay d-none">
+    <!-- Close Button - Fixed at top-left, highest z-index -->
+    <button class="story-close-btn" id="storyCloseBtn" title="סגור סיפור" tabindex="0" aria-label="סגור סיפור">
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
+    
+    <!-- Story Content Container -->
+    <div class="story-content-container">
+      <!-- Story Header -->
+      <div class="story-header">
+        <div class="d-flex align-items-center">
+          <img id="storyOwnerAvatar" class="story-owner-avatar rounded-circle me-2" />
+          <span id="storyOwnerUsername" class="text-white fw-bold" style="cursor: pointer;"></span>
+        </div>
+      </div>
+      
+                  <!-- Story Image Container with Navigation -->
+            <div class="story-image-wrapper">
+              <!-- Story Image -->
+              <div class="story-image-container">
+                <div id="storyLoader" class="story-loader d-none">
+                  <div class="spinner-border text-light" role="status">
+                    <span class="visually-hidden">טוען...</span>
+                  </div>
+                </div>
+                <img id="storyImage" class="story-image" />
+                
+                <!-- Navigation Buttons - Siblings of image, outside image edges -->
+                <button id="storyPrev" class="story-nav-btn story-nav-prev" onclick="prevStory()" title="סיפור קודם" tabindex="0" aria-label="עבור לסיפור הקודם">
+                  <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                </button>
+                <button id="storyNext" class="story-nav-btn story-nav-next" onclick="nextStory()" title="סיפור הבא" tabindex="0" aria-label="עבור לסיפור הבא">
+                  <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+    </div>
+    
+    <!-- Backdrop Click Zone - Below everything in z-index -->
+    <div class="story-backdrop" id="storyBackdrop"></div>
+  </div>
+
+  <!-- Back to Top button -->
+  <button id="backToTopBtn" title="חזרה למעלה" onclick="scrollToTop()">↑</button>
+  
+  <!-- Post Creation -->
+  <div class="modal fade" id="createPostModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="createPostModalLabel">
+            <i class="bi bi-plus-square-fill me-2"></i>יצירת פוסט חדש
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <form id="createPostForm">
+            <!-- Media Upload Section -->
+            <div class="form-group-modern mb-4">
+              <label for="postMedia" class="form-label-modern">
+                <i class="bi bi-camera-video-fill me-2"></i>תמונה או וידאו (אופציונלי)
+              </label>
+              <div class="media-upload-container-modern">
+                <input type="file" class="form-control-modern" id="postMedia" accept="image/*,video/*" onchange="previewMedia(this)">
+                <small class="text-muted d-block mt-1">
+                  <i class="bi bi-info-circle me-1"></i>
+                  תמונות: JPG, PNG, GIF | וידאו: MP4, AVI, MOV (מקסימום 10MB)
+                </small>
+                <div id="mediaPreview" class="mt-3 media-preview-container-modern d-none">
+                  <!-- Image Preview -->
+                  <img id="previewImg" class="preview-image-modern d-none">
+                  <!-- Video Preview -->
+                  <video id="previewVideo" class="preview-video-modern d-none" controls>
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="media-info mt-2">
+                    <small class="text-muted" id="mediaInfo"></small>
+                  </div>
+                  <button type="button" class="btn btn-remove-media" onclick="removeMedia()">
+                    <i class="bi bi-trash-fill me-1"></i>הסר מדיה
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Caption Input -->
+            <div class="form-group-modern mb-4">
+              <label for="postCaption" class="form-label-modern">
+                <i class="bi bi-chat-text-fill me-2"></i>כיתוב
+              </label>
+              <textarea class="form-control-modern" id="postCaption" rows="4" placeholder="מה קורה?..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>ביטול
+          </button>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-facebook-share" onclick="toggleFacebookShare()" title="שתף גם בפייסבוק">
+              <i class="bi bi-facebook"></i>
+            </button>
+            <button type="button" class="btn btn-publish-post" onclick="publishPost()">
+              <i class="bi bi-check-circle-fill me-1"></i>פרסום
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification shown when a new post is uploaded -->
+  <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+    <div id="postNotification" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="bi bi-check-circle-fill text-success me-2"></i>
+        <strong class="me-auto">הצלחה</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        פוסט חדש פורסם בהצלחה!
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Post Modal -->
+  <div class="modal fade" id="sharePostModal" tabindex="-1">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="sharePostModalLabel">
+            <i class="bi bi-share me-2"></i>שתף פוסט
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <!-- Search Input -->
+          <div class="form-group-modern mb-4">
+            <label class="form-label-modern">
+              <i class="bi bi-search me-2"></i>חפש בעוקבים
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="bi bi-search"></i>
+              </span>
+              <input type="text" class="form-control form-control-modern" id="shareSearchInput" 
+                     placeholder="הקלד שם משתמש..." onkeyup="filterShareUsers(this.value)">
+            </div>
+          </div>
+          
+          <!-- Following Users List -->
+          <div class="share-users-section">
+            <div class="section-header mb-3">
+              <h6 class="section-title">
+                <i class="bi bi-people-fill me-2"></i>העוקבים שלך
+              </h6>
+            </div>
+            <div class="share-users-container" id="shareUsersContainer">
+              <!-- Share users will be dynamically loaded here -->
+              <div class="text-center text-muted">טוען עוקבים...</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Social Media Icons -->
+        <div class="modal-footer modern-modal-footer justify-content-center">
+          <div class="share-social-icons">
+            <button class="share-social-btn" title="העתק קישור">
+              <i class="bi bi-link-45deg"></i>
+            </button>
+            <button class="share-social-btn" title="Facebook">
+              <i class="bi bi-facebook"></i>
+            </button>
+            <button class="share-social-btn" title="Messenger">
+              <i class="bi bi-messenger"></i>
+            </button>
+            <button class="share-social-btn" title="WhatsApp">
+              <i class="bi bi-whatsapp"></i>
+            </button>
+            <button class="share-social-btn" title="Email">
+              <i class="bi bi-envelope"></i>
+            </button>
+            <button class="share-social-btn" title="X (Twitter)">
+              <i class="bi bi-twitter-x"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Success Modal -->
+  <div class="modal fade" id="shareSuccessModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-body modern-modal-body text-center p-4">
+          <div class="success-icon mb-3">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+          </div>
+          <h5 class="mb-3">הפוסט נשלח בהצלחה!</h5>
+          <p class="text-muted mb-0">הפוסט שותף עם המשתמש שבחרת</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Group Modal -->
+  <div class="modal fade" id="createGroupModal" tabindex="-1" aria-labelledby="createGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="createGroupModalLabel">
+            <i class="bi bi-plus-circle-fill me-2"></i>יצירת קבוצה חדשה
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <form id="createGroupForm" enctype="multipart/form-data">
+            <div class="form-group-modern mb-4">
+              <label for="groupName" class="form-label-modern">
+                <i class="bi bi-tag-fill me-2"></i>שם הקבוצה
+              </label>
+              <input type="text" id="groupName" class="form-control-modern" placeholder="הזן שם לקבוצה" required>
+            </div>
+            <div class="form-group-modern mb-4">
+              <label for="groupCategory" class="form-label-modern">
+                <i class="bi bi-collection-fill me-2"></i>קטגוריה
+              </label>
+              <input type="text" id="groupCategory" class="form-control-modern" placeholder="הזן קטגוריה (אופציונלי)">
+            </div>
+            <div class="form-group-modern mb-4">
+              <label for="groupDescription" class="form-label-modern">
+                <i class="bi bi-chat-text-fill me-2"></i>תיאור הקבוצה
+              </label>
+              <textarea id="groupDescription" class="form-control-modern" rows="3" placeholder="הוסף תיאור לקבוצה (אופציונלי)" dir="rtl"></textarea>
+            </div>
+            <div class="form-group-modern mb-4">
+              <label for="groupImage" class="form-label-modern">
+                <i class="bi bi-image-fill me-2"></i>תמונת פרופיל לקבוצה
+              </label>
+              <input type="file" id="groupImage" class="form-control-modern" accept="image/*" onchange="previewGroupImage(this)">
+              <div class="form-text-modern">בחר תמונה מהמחשב לתמונת הפרופיל של הקבוצה</div>
+            </div>
+            
+            <!-- Avatar Preview -->
+            <div class="form-group-modern mb-4">
+              <label class="form-label-modern">
+                <i class="bi bi-eye-fill me-2"></i>תמונה נבחרת
+              </label>
+              <div class="avatar-preview-modern">
+                <img id="avatarPreview" src="images/profile.jpg" alt="Avatar Preview" class="avatar-preview-image">
+              </div>
+            </div>
+
+            <div id="groupError" class="error-message-modern" style="display:none;"></div>
+          </form>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>ביטול
+          </button>
+          <button type="button" class="btn btn-create-group" onclick="createGroup()">
+            <i class="bi bi-check-circle-fill me-1"></i>צור קבוצה
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Groups Modal -->
+  <div class="modal fade" id="myGroupsModal" tabindex="-1" aria-labelledby="myGroupsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="myGroupsModalLabel">
+            <i class="bi bi-people-fill me-2"></i>הקבוצות שלי
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <div id="myGroupsList">
+            <div class="text-center text-muted">טוען קבוצות...</div>
+          </div>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-close-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>סגור
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal removed - replaced with Dark Mode button -->
+
+  <!-- Confirmation Modal -->
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="confirmationModalLabel">
+            <i class="bi bi-question-circle-fill me-2"></i>אישור
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body text-center">
+          <p class="mb-0">האם אתה בטוח רוצה לשמור את השינויים?</p>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-2"></i>לא
+          </button>
+          <button type="button" class="btn btn-save-settings" onclick="saveSettingsConfirmed()">
+            <i class="bi bi-check-circle-fill me-2"></i>כן
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Facebook Share Confirmation Modal -->
+  <div class="modal fade" id="facebookShareModal" tabindex="-1" aria-labelledby="facebookShareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="facebookShareModalLabel">
+            <i class="bi bi-facebook me-2"></i>שתף בפייסבוק
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body text-center">
+          <div class="mb-3">
+            <i class="bi bi-facebook text-primary" style="font-size: 3rem;"></i>
+          </div>
+          <p class="mb-0">האם ברצונך לפרסם את הפוסט גם בעמוד הפייסבוק?</p>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" onclick="cancelFacebookShare()" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-2"></i>לא
+          </button>
+          <button type="button" class="btn btn-facebook-confirm" onclick="confirmFacebookShare()">
+            <i class="bi bi-check-circle-fill me-2"></i>כן, שתף
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group Details Modal -->
+  <div class="modal fade" id="groupDetailsModal" tabindex="-1" aria-labelledby="groupDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <div class="d-flex align-items-center">
+            <div class="group-avatar-container me-3">
+              <img id="groupDetailsAvatar" src="images/profile.jpg" alt="תמונת הקבוצה" class="group-avatar">
+              <div class="group-avatar-ring"></div>
+            </div>
+            <div>
+              <h5 class="modal-title text-white mb-0" id="groupDetailsModalLabel">פרטי הקבוצה</h5>
+            </div>
+          </div>
+          <button type="button" class="btn-close modern-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <div class="group-header-section mb-4">
+            <h3 id="groupDetailsName" class="group-name mb-2">שם הקבוצה</h3>
+            <p id="groupDetailsDescription" class="group-description text-muted">תיאור הקבוצה</p>
+            <span id="groupDetailsCategory" class="group-category-badge">קטגוריה</span>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="group-stats-card mb-3">
+                <h6 class="text-muted mb-2">מספר חברים</h6>
+                <h4 id="groupDetailsMemberCount" class="text-primary mb-0">0</h4>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="group-stats-card mb-3">
+                <h6 class="text-muted mb-2">מנהל הקבוצה</h6>
+                <div class="d-flex align-items-center">
+                  <img id="groupDetailsAdminAvatar" src="images/profile.jpg" alt="תמונת המנהל" class="admin-avatar me-2">
+                  <span id="groupDetailsAdminName" class="admin-name">שם המנהל</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="group-members-section">
+            <h6 class="text-muted mb-3">חברי הקבוצה</h6>
+            <div id="groupDetailsMembers" class="members-grid">
+              <!-- Members will be populated here -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" onclick="closeGroupDetailsAndReturnToSearch()">חזור לחיפוש</button>
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">סגור</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="searchModalLabel">
+            <i class="bi bi-search-heart-fill me-2"></i>חיפוש
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <!-- Search Tabs -->
+          <ul class="nav nav-tabs modern-tabs mb-4" id="searchTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="people-tab" data-bs-toggle="tab" data-bs-target="#people-tab-pane" type="button" role="tab" aria-controls="people-tab-pane" aria-selected="true">
+                <i class="bi bi-people-fill me-2"></i>חיפוש אנשים
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="groups-tab" data-bs-toggle="tab" data-bs-target="#groups-tab-pane" type="button" role="tab" aria-controls="groups-tab-pane" aria-selected="false">
+                <i class="bi bi-collection-fill me-2"></i>חיפוש קבוצות
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tab Content -->
+          <div class="tab-content" id="searchTabContent">
+            <!-- People Search Tab -->
+            <div class="tab-pane fade show active" id="people-tab-pane" role="tabpanel" aria-labelledby="people-tab" tabindex="0">
+              <div class="form-group-modern mb-4">
+                <label for="peopleSearchInput" class="form-label-modern">
+                  <i class="bi bi-person-search me-2"></i>חיפוש אנשים
+                </label>
+                <input type="text" id="peopleSearchInput" class="form-control-modern" placeholder="הקלד שם משתמש לחיפוש..." onkeyup="searchPeople(this.value)">
+              </div>
+              
+              <div id="peopleSearchResults" class="search-results-container">
+                <!-- People search results will be loaded here -->
+              </div>
+            </div>
+
+            <!-- Groups Search Tab -->
+            <div class="tab-pane fade" id="groups-tab-pane" role="tabpanel" aria-labelledby="groups-tab" tabindex="0">
+              <div class="form-group-modern mb-4">
+                <label for="groupsSearchInput" class="form-label-modern">
+                  <i class="bi bi-collection-search me-2"></i>חיפוש קבוצות
+                </label>
+                <div class="input-group-modern">
+                  <button type="button" class="btn-funnel-search-left" onclick="openAdvancedGroupSearchModal()" title="חיפוש מתקדם">
+                    <i class="bi bi-funnel-fill"></i>
+                  </button>
+                  <input type="text" id="groupsSearchInput" class="form-control-modern" placeholder="הקלד שם קבוצה לחיפוש..." onkeyup="searchGroups(this.value)">
+                </div>
+              </div>
+              
+              <div id="groupsSearchResults" class="search-results-container">
+                <!-- Groups search results will be loaded here -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-2"></i>סגור
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced Search Modal -->
+  <div class="modal fade" id="advancedSearchModal" tabindex="-1" aria-labelledby="advancedSearchModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="advancedSearchModalLabel">
+            <i class="bi bi-search-heart-fill me-2"></i>חיפוש מתקדם
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <form id="advancedSearchForm">
+            <!-- Username Search -->
+            <div class="form-group-modern mb-4">
+              <label for="searchUsername" class="form-label-modern">
+                <i class="bi bi-person-fill me-2"></i>חיפוש לפי שם משתמש
+              </label>
+              <input type="text" id="searchUsername" class="form-control-modern" placeholder="הזן שם משתמש ספציפי (אופציונלי)">
+            </div>
+            
+            <!-- Post Type Selection -->
+            <div class="form-group-modern mb-4">
+              <label class="form-label-modern">
+                <i class="bi bi-collection-fill me-2"></i>סוג הפוסט
+              </label>
+              <div class="post-type-options">
+                <div class="post-type-option">
+                  <input type="radio" id="postTypeAll" name="postType" value="all" class="post-type-radio" checked>
+                  <label for="postTypeAll" class="post-type-label">
+                    <i class="bi bi-collection me-2"></i>הכל
+                  </label>
+                </div>
+                <div class="post-type-option">
+                  <input type="radio" id="postTypeImage" name="postType" value="image" class="post-type-radio">
+                  <label for="postTypeImage" class="post-type-label">
+                    <i class="bi bi-image me-2"></i>תמונות בלבד
+                  </label>
+                </div>
+                <div class="post-type-option">
+                  <input type="radio" id="postTypeVideo" name="postType" value="video" class="post-type-radio">
+                  <label for="postTypeVideo" class="post-type-label">
+                    <i class="bi bi-camera-video me-2"></i>סרטונים בלבד
+                  </label>
+                </div>
+                <div class="post-type-option">
+                  <input type="radio" id="postTypeText" name="postType" value="text" class="post-type-radio">
+                  <label for="postTypeText" class="post-type-label">
+                    <i class="bi bi-chat-text me-2"></i>טקסט בלבד
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Minimum Likes -->
+            <div class="form-group-modern mb-4">
+              <label for="minLikes" class="form-label-modern">
+                <i class="bi bi-heart-fill me-2"></i>מינימום לייקים
+              </label>
+              <input type="number" id="minLikes" class="form-control-modern" placeholder="הזן מספר לייקים מינימלי (אופציונלי)" min="0">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>ביטול
+          </button>
+          <button type="button" class="btn btn-search-advanced" onclick="performAdvancedSearch()">
+            <i class="bi bi-search me-1"></i>חיפוש
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced Group Search Modal -->
+  <div class="modal fade" id="advancedGroupSearchModal" tabindex="-1" aria-labelledby="advancedGroupSearchModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="advancedGroupSearchModalLabel">
+            <i class="bi bi-funnel-fill me-2"></i>חיפוש קבוצות מתקדם
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <form id="advancedGroupSearchForm">
+            <!-- Group Admin Name Search -->
+            <div class="form-group-modern mb-4">
+              <label for="searchGroupAdmin" class="form-label-modern">
+                <i class="bi bi-person-badge-fill me-2"></i>שם מנהל הקבוצה
+              </label>
+              <input type="text" id="searchGroupAdmin" class="form-control-modern" placeholder="הזן שם מנהל הקבוצה (אופציונלי)">
+            </div>
+            
+            <!-- Group Creation Year -->
+            <div class="form-group-modern mb-4">
+              <label for="groupCreationYear" class="form-label-modern">
+                <i class="bi bi-calendar-fill me-2"></i>השנה בה נוצרה הקבוצה
+              </label>
+              <input type="number" id="groupCreationYear" class="form-control-modern" placeholder="הזן שנה (למשל: 2023)" min="2020" max="2025">
+            </div>
+            
+            <!-- Group Member Count -->
+            <div class="form-group-modern mb-4">
+              <label for="groupMemberCount" class="form-label-modern">
+                <i class="bi bi-people-fill me-2"></i>כמות משתתפים בקבוצה
+              </label>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <input type="number" id="minMemberCount" class="form-control-modern" placeholder="מינימום משתתפים" min="1">
+                </div>
+                <div class="col-md-6">
+                  <input type="number" id="maxMemberCount" class="form-control-modern" placeholder="מקסימום משתתפים" min="1">
+                </div>
+              </div>
+              <div class="form-text-modern">הזן טווח של כמות משתתפים (אופציונלי)</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>ביטול
+          </button>
+          <button type="button" class="btn btn-search-advanced" onclick="performAdvancedGroupSearch()">
+            <i class="bi bi-search me-1"></i>חיפוש
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Fact Modal -->
+  <div class="modal fade" id="dailyFactModal" tabindex="-1" aria-labelledby="dailyFactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="dailyFactModalLabel">
+            <i class="bi bi-lightbulb-fill text-warning"></i>
+            עובדה יומית
+          </h5>
+        </div>
+        <div class="modal-body">
+          <div id="factContent">
+            <div class="fact-loading">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">טוען...</span>
+              </div>
+              <p class="mt-2">טוען עובדה יומית...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Followers Map Modal -->
+  <div class="modal fade" id="followersMapModal" tabindex="-1" aria-labelledby="followersMapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="followersMapModalLabel">
+            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+            מפת העוקבים
+          </h5>
+        </div>
+        <div class="modal-body p-0">
+          <!-- Loading State -->
+          <div id="mapLoading" class="map-loading">
+            <div class="d-flex flex-column align-items-center justify-content-center py-5">
+              <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">טוען מפה...</span>
+              </div>
+              <p class="text-muted">טוען מפת העוקבים...</p>
+            </div>
+          </div>
+          
+          <!-- Error State -->
+          <div id="mapError" class="map-error d-none">
+            <div class="d-flex flex-column align-items-center justify-content-center py-5">
+              <i class="bi bi-exclamation-triangle text-warning mb-3" style="font-size: 3rem;"></i>
+              <h6 class="text-muted mb-3">שגיאה בטעינת המפה</h6>
+              <p class="text-muted text-center mb-3">אנא בדוק את חיבור האינטרנט ונסה שוב</p>
+              <button type="button" class="btn btn-primary" onclick="loadFollowersMap()">
+                <i class="bi bi-arrow-clockwise me-2"></i>נסה שוב
+              </button>
+            </div>
+          </div>
+          
+          <!-- Map Container -->
+          <div id="followersMap" class="d-none"></div>
+        </div>
+        <div class="modal-footer">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <div style="color: black; font-weight: 600;">
+              <i class="bi bi-people-fill me-1"></i>
+              <span id="followersMapCount">0</span> עוקבים מוצגים
+            </div>
+            <div>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Dashboard Modal -->
+  <div class="modal fade" id="dashboardModal" tabindex="-1" aria-labelledby="dashboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="dashboardModalLabel">
+            <i class="bi bi-graph-up me-2"></i>לוח בקרה - סטטיסטיקות הפוסטים שלי
+          </h5>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <div class="row">
+            <!-- Likes Chart -->
+            <div class="col-lg-4 mb-4">
+              <div class="chart-container">
+                <h6 class="chart-title text-center mb-3">
+                  <i class="bi bi-heart-fill me-2" style="color: #a855f7;"></i>לייקים לפי פוסט
+                </h6>
+                <div id="likesChart" class="chart-wrapper"></div>
+                <div id="likesChartThumbnails" class="chart-thumbnails mt-3"></div>
+              </div>
+            </div>
+            
+            <!-- Comments Chart -->
+            <div class="col-lg-4 mb-4">
+              <div class="chart-container">
+                <h6 class="chart-title text-center mb-3">
+                  <i class="bi bi-chat-fill me-2" style="color: #a855f7;"></i>תגובות לפי פוסט
+                </h6>
+                <div id="commentsChart" class="chart-wrapper"></div>
+                <div id="commentsChartThumbnails" class="chart-thumbnails mt-3"></div>
+              </div>
+            </div>
+            
+            <!-- Shares Chart -->
+            <div class="col-lg-4 mb-4">
+              <div class="chart-container">
+                <h6 class="chart-title text-center mb-3">
+                  <i class="bi bi-share-fill me-2" style="color: #a855f7;"></i>שיתופים לפי פוסט
+                </h6>
+                <div id="sharesChart" class="chart-wrapper"></div>
+                <div id="sharesChartThumbnails" class="chart-thumbnails mt-3"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Loading State -->
+          <div id="dashboardLoading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">טוען נתונים...</span>
+            </div>
+            <p class="mt-3 text-muted">טוען נתוני לוח הבקרה...</p>
+          </div>
+          
+          <!-- Empty State -->
+          <div id="dashboardEmpty" class="text-center py-5 d-none">
+            <i class="bi bi-inbox text-muted mb-3" style="font-size: 3rem;"></i>
+            <p class="text-muted">אין פוסטים להצגה בלוח הבקרה</p>
+          </div>
+          
+          <!-- Error State -->
+          <div id="dashboardError" class="text-center py-5 d-none">
+            <i class="bi bi-exclamation-triangle text-warning mb-3" style="font-size: 3rem;"></i>
+            <p class="text-muted">שגיאה בטעינת נתוני לוח הבקרה</p>
+            <button class="btn btn-primary btn-sm" onclick="loadDashboardData()">
+              <i class="bi bi-arrow-clockwise me-1"></i>נסה שוב
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>סגור
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="profileModalLabel">
+            <i class="bi bi-person-circle me-2"></i>הפרופיל שלי
+          </h5>
+          <button type="button" class="btn-close modern-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <!-- Profile Header Section -->
+          <div class="profile-header-section mb-4">
+            <div class="d-flex align-items-center">
+              <div class="profile-avatar-container me-4">
+                <img id="profileModalAvatar" src="images/profile.jpg" alt="תמונת פרופיל" class="profile-avatar">
+                <div class="profile-avatar-ring"></div>
+              </div>
+              <div class="profile-info-section">
+                <h3 id="profileModalUsername" class="profile-username mb-2">שם משתמש</h3>
+                <div class="profile-location mb-2" id="profileModalLocation">
+                  <i class="bi bi-geo-alt me-2"></i>
+                  <span class="location-text">לא צוין מיקום</span>
+                </div>
+                <div class="profile-stats mb-3">
+                  <div class="stat-item">
+                    <span class="stat-number" id="profilePostsCount">0</span>
+                    <span class="stat-label">פוסטים</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-number" id="profileFollowersCount">0</span>
+                    <span class="stat-label">עוקבים</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-number" id="profileFollowingCount">0</span>
+                    <span class="stat-label">במעקב</span>
+                  </div>
+                </div>
+                <div class="profile-bio mb-3">
+                  <p class="bio-text" id="profileModalBio">ברוכים הבאים לפרופיל שלי! 👋</p>
+                </div>
+                <div class="profile-actions">
+                  <button class="btn btn-edit-profile" onclick="openEditProfileModal()">
+                    <i class="bi bi-pencil-square me-2"></i>ערוך פרופיל
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Posts Grid -->
+          <div class="profile-posts-section">
+            <div class="posts-filter-bar mb-3">
+              <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">
+                  <i class="bi bi-grid-3x3 me-2"></i>הכל
+                </button>
+                <button class="filter-tab" data-filter="posts">
+                  <i class="bi bi-image me-2"></i>פוסטים
+                </button>
+                <button class="filter-tab" data-filter="videos">
+                  <i class="bi bi-play-circle me-2"></i>סרטונים
+                </button>
+              </div>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="profilePostsLoading" class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">טוען פוסטים...</span>
+              </div>
+              <p class="mt-3 text-muted">טוען את הפוסטים שלך...</p>
+            </div>
+            
+            <!-- Empty State -->
+            <div id="profilePostsEmpty" class="text-center py-5 d-none">
+              <i class="bi bi-camera text-muted mb-3" style="font-size: 3rem;"></i>
+              <p class="text-muted">אין פוסטים להצגה</p>
+              <button class="btn btn-primary" onclick="openCreatePostModal()">
+                <i class="bi bi-plus-circle me-2"></i>צור פוסט ראשון
+              </button>
+            </div>
+            
+            <!-- Error State -->
+            <div id="profilePostsError" class="text-center py-5 d-none">
+              <i class="bi bi-exclamation-triangle text-warning mb-3" style="font-size: 3rem;"></i>
+              <p class="text-muted">שגיאה בטעינת הפוסטים</p>
+              <button class="btn btn-primary btn-sm" onclick="loadProfilePosts()">
+                <i class="bi bi-arrow-clockwise me-1"></i>נסה שוב
+              </button>
+            </div>
+            
+            <!-- Posts Grid -->
+            <div id="profilePostsGrid" class="profile-posts-grid d-none">
+              <!-- Posts will be dynamically loaded here -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>סגור
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="editProfileModalLabel">
+            <i class="bi bi-pencil-square me-2"></i>ערוך פרופיל
+          </h5>
+          <button type="button" class="btn-close modern-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <form id="editProfileForm">
+            <!-- Profile Picture Section -->
+            <div class="edit-profile-picture-section mb-4">
+              <div class="text-center">
+                <div class="edit-profile-avatar-container">
+                  <img id="editProfileAvatar" src="images/profile.jpg" alt="תמונת פרופיל" class="edit-profile-avatar">
+                  <div class="edit-profile-avatar-overlay">
+                    <i class="bi bi-camera-fill"></i>
+                    <span>לחץ לשינוי</span>
+                  </div>
+                  <input type="file" id="editProfilePictureInput" accept="image/*" class="edit-profile-file-input">
+                </div>
+                <p class="edit-profile-avatar-hint">לחץ על התמונה לשינוי</p>
+              </div>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="edit-profile-form-fields">
+              <div class="form-group mb-3">
+                <label for="editUsername" class="form-label">
+                  <i class="bi bi-person me-2"></i>שם משתמש
+                </label>
+                <input type="text" class="form-control modern-input" id="editUsername" name="username" required>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="editLocation" class="form-label">
+                  <i class="bi bi-geo-alt me-2"></i>מיקום
+                </label>
+                <input type="text" class="form-control modern-input" id="editLocation" name="location" placeholder="למשל: תל אביב, ישראל">
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="editBio" class="form-label">
+                  <i class="bi bi-chat-quote me-2"></i>ביוגרפיה
+                </label>
+                <textarea class="form-control modern-input" id="editBio" name="bio" rows="3" placeholder="ספר על עצמך..."></textarea>
+              </div>
+            </div>
+
+            <!-- Loading and Success States -->
+            <div id="editProfileLoading" class="text-center py-3 d-none">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">טוען...</span>
+              </div>
+              <p class="mt-2">מעדכן את הפרופיל...</p>
+            </div>
+
+            <div id="editProfileSuccess" class="alert alert-success d-none" role="alert">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              הפרופיל עודכן בהצלחה!
+            </div>
+
+            <div id="editProfileError" class="alert alert-danger d-none" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <span id="editProfileErrorMessage">שגיאה בעדכון הפרופיל</span>
+            </div>
+          </form>
+
+          <!-- Delete Account Section -->
+          <div class="delete-account-section mt-4 pt-4 border-top">
+            <h6 class="text-danger mb-3">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>אזור מסוכן
+            </h6>
+            <p class="text-muted small mb-3">
+              מחיקת החשבון היא פעולה בלתי הפיכה. כל הנתונים שלך, כולל פוסטים, תגובות ועוקבים יימחקו לצמיתות.
+            </p>
+            <button type="button" class="btn btn-danger btn-delete-account" onclick="confirmDeleteAccount()">
+              <i class="bi bi-trash-fill me-2"></i>מחק חשבון לצמיתות
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>ביטול
+          </button>
+          <button type="button" class="btn btn-save-profile" onclick="saveProfileChanges()">
+            <i class="bi bi-check-circle-fill me-1"></i>שמור שינויים
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error and empty state containers -->
+  <div id="feedError" style="display:none;color:red;"></div>
+  <div id="feedEmpty" style="display:none;">אין פוסטים להצגה כרגע. התחילו לעקוב אחרי משתמשים!</div>
+
+  <!-- Delete Account Confirmation Modal -->
+  <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="deleteAccountModalLabel">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>מחיקת חשבון לצמיתות
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-3">
+            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+          </div>
+          <h6 class="text-danger text-center mb-3">אזהרה: פעולה בלתי הפיכה!</h6>
+          <p class="text-center mb-3">
+            מחיקת החשבון תמחק לצמיתות את כל הנתונים שלך:
+          </p>
+          <ul class="text-start">
+            <li>כל הפוסטים שלך</li>
+            <li>כל התגובות שלך</li>
+            <li>רשימת העוקבים שלך</li>
+            <li>כל הנתונים האישיים</li>
+            <li>הפרופיל שלך</li>
+          </ul>
+          <div class="alert alert-warning mt-3">
+            <strong>שים לב:</strong> פעולה זו אינה ניתנת לביטול!
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-2"></i>ביטול
+          </button>
+          <button type="button" class="btn btn-danger" onclick="proceedWithAccountDeletion()">
+            <i class="bi bi-trash-fill me-2"></i>מחק חשבון לצמיתות
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications Modal -->
+  <div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="notificationsModalLabel">
+            <i class="bi bi-bell me-2"></i>התראות
+          </h5>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="markAllNotificationsAsRead()">
+              <i class="bi bi-check-all me-1"></i>סמן הכל כנקרא
+            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <div class="notifications-container" id="notificationsContainer">
+            <div class="text-center text-muted py-4">
+              <i class="bi bi-bell-slash" style="font-size: 2rem;"></i>
+              <p class="mt-2">אין התראות חדשות</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>סגור
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Profile Modal -->
+  <div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content modern-group-modal">
+        <div class="modal-header modern-modal-header">
+          <h5 class="modal-title" id="userProfileModalLabel">
+            <i class="bi bi-person me-2"></i>פרופיל משתמש
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modern-modal-body">
+          <div class="user-profile-content" id="userProfileContent">
+            <div class="text-center text-muted py-4">
+              <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+              <p class="mt-2">טוען פרופיל...</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer modern-modal-footer">
+          <button type="button" class="btn btn-cancel-modal" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle-fill me-1"></i>סגור
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Google Maps API -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBsy13tTl268IL-chlMBDF8lFqAgQ3tcg&libraries=marker&callback=initMap" onerror="handleGoogleMapsError()"></script>
+  <script>
+    // Handle Google Maps API loading errors
+    function handleGoogleMapsError() {
+      console.error('Google Maps API failed to load - invalid API key');
+      window.googleMapsError = true;
+    }
+    
+    // Check if there was an error loading Google Maps
+    window.googleMapsLoaded = false;
+    function initMap() {
+      console.log('Google Maps API loaded successfully');
+      window.googleMapsLoaded = true;
+    }
+  </script>
+  <script src="feed.js"></script>
+</body>
+</html>
